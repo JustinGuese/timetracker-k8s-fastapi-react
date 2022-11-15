@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: timetracker-backend
+  name: timetracker-backend
+  namespace: timetracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: timetracker-backend
+  template:
+    metadata:
+      labels:
+        service: timetracker-backend
+    spec:
+      containers:
+        - env:
+            - name: PSQL_URL
+              value: postgres:postgres@postgres-service:5432/postgres # i mean it's a prototype so come on
+          image: guestros/timetracker:latest
+          name: tradingbot-backend
+          ports:
+            - containerPort: 8000
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: timetracker-backend
+  name: timetracker-backend-service
+  namespace: timetracker
+spec:
+  ports:
+    - name: "8000"
+      port: 8000
+      targetPort: 8000
+  selector:
+    service: timetracker-backend

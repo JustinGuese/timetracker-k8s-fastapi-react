@@ -1,0 +1,4 @@
+fastapi
+SqlAlchemy
+psycopg2-binary
+uvicorn[standard]

@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    service: postgres-timetracker-timetracker
+  name: postgres-timetracker
+  namespace: timetracker
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Mi
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: postgres-timetracker
+  name: postgres
+  namespace: timetracker
+  annotations:
+    backup.velero.io/backup-volumes: postgres-timetracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: postgres-timetracker
+  strategy:
+    type: Recreate
+  template:
+    metadata:    
+      labels:
+        service: postgres-timetracker
+      annotations:
+        backup.velero.io/backup-volumes: postgres-timetracker
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_USER
+              value: postgres
+          image: postgres:14-alpine
+          name: postgres
+          ports:
+            - containerPort: 5432
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-timetracker
+      restartPolicy: Always
+      volumes:
+        - name: postgres-timetracker
+          persistentVolumeClaim:
+            claimName: postgres-timetracker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: postgres-timetracker
+  name: postgres-service
+  namespace: timetracker
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    service: postgres-timetracker
