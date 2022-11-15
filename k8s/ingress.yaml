@@ -11,6 +11,7 @@ spec:
   tls:
   - hosts:
     - timetracker-backend.datafortress.cloud
+    - timetracker.datafortress.cloud
     secretName: tls-secret
   rules:
   - host: timetracker-backend.datafortress.cloud
@@ -23,3 +24,13 @@ spec:
             name: timetracker-backend-service
             port:
               number: 8000
+  - host: timetracker.datafortress.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: timetracker-frontend-service
+            port:
+              number: 80

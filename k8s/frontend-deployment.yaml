@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: timetracker-frontend
+  name: timetracker-frontend
+  namespace: timetracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: timetracker-frontend
+  template:
+    metadata:
+      labels:
+        service: timetracker-frontend
+    spec:
+      containers:
+        - image: guestros/timetracker:latest
+          name: tradingbot-backend
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: timetracker-frontend
+  name: timetracker-frontend-service
+  namespace: timetracker
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 80
+  selector:
+    service: timetracker-frontend

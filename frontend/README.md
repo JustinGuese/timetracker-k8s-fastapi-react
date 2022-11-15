@@ -1,69 +1,70 @@
-Task:
+# Getting Started with Create React App
 
-BACKENDURL: https://timetracker-backend.datafortress.cloud/docs
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-^ the link above has a nice swagger documentation as well
+## Available Scripts
 
-Create a "timetracker" which has one component for the entry "buchinger" and one entry for "hpe". The logos are in the src folder.
+In the project directory, you can run:
 
-One component should look roughly like this:
+### `npm start`
 
-![](./exampleTimeItem.png)
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-Consisting out of four parts:
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-1. Pause/Play button. This should change on each click
-2. The company logo, see /home/jguese/code/timetracker/frontend/src/bw_logo.jpg
-3. The company name
-4. The time it is running since "Play" was pressed, or "empty string" if "Play" was not yet pressed
+### `npm test`
 
-## Logic:
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-0. Grab clients and current status from backend
-    - GET '/timer/clients'
-        - returns list of string entries (hpe, bw)
-    - GET '/timer/info'
-        - returns list of "TimeEntryInfos"
-        ```
-        [
-            {
-                "customer": "hpe",
-                "running": false,
-                "start_time": null
-            },
-            {
-                "customer": "bw",
-                "running": false,
-                "start_time": null
-            }
-        ]
-        ```
-    - set the start/pause conditions according to the above info
-1. "Not started" component:
-    - Play button is visible
-    - No timer (right) is shown (empty string)
-2. User clicks on "Play"
-    - Change play button to pause button
-    - remember time when user pressed play
-    - send a put request to backend PUT '/timer/start'
-        - body
-        ```
-        {
-            "customer": "string",
-            "start_time": "2022-11-15T08:55:03.118Z"
-        }
-        ```
-    - show the current passed time on the right side
-3. User clicks on "Pause"
-    - Change pause button to play button
-    - Send request to backend, PUT '/timer/stop'
-        - body
-        ```
-        {
-            "customer": "string",
-            "end_time": "2022-11-15T08:55:03.120Z"
-        }
-        ```
-    - Remove the time counter and show an empty string instead
+### `npm run build`
 
-Also check for errors, they might tell you what is going wrong. The endpoint returns code 200 if everything went alright
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm run eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

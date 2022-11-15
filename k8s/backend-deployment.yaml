@@ -19,7 +19,7 @@ spec:
         - env:
             - name: PSQL_URL
               value: postgres:postgres@postgres-service:5432/postgres # i mean it's a prototype so come on
-          image: guestros/timetracker:latest
+          image: guestros/timetracker-backend:latest
           name: tradingbot-backend
           ports:
             - containerPort: 8000

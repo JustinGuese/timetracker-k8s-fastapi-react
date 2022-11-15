@@ -7,7 +7,9 @@ from sqlalchemy.orm import Session
 
 app = FastAPI()
 origins = [
-    "*",
+    "https://timetracker.datafortress.cloud/",
+    "timetracker.datafortress.cloud",
+    "http://localhost:3000/",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -45,7 +47,7 @@ async def timer_info():
         response.append(entry)
     return response
 
-@app.put("/timer/start/")
+@app.put("/timer/start")
 async def start_timer(timerstart: TimerStart):
     if timerstart.customer not in TIMER_MEMORY:
         raise HTTPException(status_code=404, detail="customer not found. valid options are: " + ", ".join(TIMER_MEMORY.keys()))
@@ -55,7 +57,7 @@ async def start_timer(timerstart: TimerStart):
     TIMER_MEMORY[timerstart.customer]["running"] = True
     TIMER_MEMORY[timerstart.customer]["start_time"] = timerstart.start_time
     
-@app.put("/timer/stop/")
+@app.put("/timer/stop")
 async def start_timer(timerstart: TimerEnd, db: Session = Depends(get_db)):
     if timerstart.customer not in TIMER_MEMORY:
         raise HTTPException(status_code=404, detail="customer not found. valid options are: " + ", ".join(TIMER_MEMORY.keys()))
@@ -63,12 +65,15 @@ async def start_timer(timerstart: TimerEnd, db: Session = Depends(get_db)):
     if not TIMER_MEMORY[timerstart.customer]["running"]:
         raise HTTPException(status_code=400, detail="timer not running. you can't end it before it started")
     # else construct db object
-    timeDbObj = TimeEntryDB(
-        customer = timerstart.customer,
-        start_time = TIMER_MEMORY[timerstart.customer]["start_time"],
-        end_time = TIMER_MEMORY[timerstart.customer]["end_time"],
-        duration_hours = (TIMER_MEMORY[timerstart.customer]["end_time"] - TIMER_MEMORY[timerstart.customer]["start_time"]).total_seconds() / 3600
-    )
+    try:
+        timeDbObj = TimeEntryDB(
+            customer = timerstart.customer,
+            start_time = TIMER_MEMORY[timerstart.customer]["start_time"],
+            end_time = timerstart.end_time,
+            duration_hours = (timerstart.end_time - TIMER_MEMORY[timerstart.customer]["start_time"]).total_seconds() / 3600
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="error while constructing db object: " + str(e))
     try:
         db.add(timeDbObj)
         db.commit()

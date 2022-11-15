@@ -12,16 +12,25 @@ services:
     volumes:
       - timetracker-psql:/var/lib/postgresql/data
 
-  timetracker:
-    image: guestros/timetracker:latest
+  timetracker-backend:
+    image: guestros/timetracker-backend:latest
     build: ./backend
-    container_name: timetracker
+    container_name: timetracker-backend
     ports:
       - "8000:8000"
     depends_on:
       - postgres
     environment:
       - PSQL_URL=postgres:postgres@postgres:5432/postgres
+
+  timetracker:
+    image: guestros/timetracker:latest
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - timetracker-backend
+      - postgres
 
 volumes:
   timetracker-psql:
